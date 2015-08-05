@@ -1,8 +1,6 @@
 # TODO:
 
-- Get GMaps to display on page
-- Download/parse TFL bike API
-- Plot points of docking stations
+- Periodically download/parse/JSON-ify the TFL XML.
 - Calculate road-only route map between all stations (too large?)
 - Determine low/avg/high speed for bike (add variance for traffic?)
 - Traffic lights API for stoppages?

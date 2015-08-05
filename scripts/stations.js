@@ -1,35 +1,82 @@
 define(['Station'], function(Station) {
-    var stations = [
-        new Station("River Street, Clerkenwell", 51.52916347, -0.109970527, 18, 1),
-        new Station("Phillimore Gardens, Kensington", 51.49960695, -0.197574246, 2, 35),
-        new Station("Caldwell Street, Stockwell", 51.477839, -0.116493, 43, 1)
-    ];
+    function getElementText(container, elementName) {
+        return container.find(elementName).text();
+    }
+
+    function getElementFloat(container, elementName) {
+        return parseFloat(getElementText(container, elementName));
+    }
+
+    function getElementInt(container, elementName) {
+        return parseInt(getElementText(container, elementName));
+    }
+
+    // TODO: this more neatly, without async:false.
+    function loadStations() {
+        var stations = [];
+
+        $.ajax({
+            url: "livecyclehireupdates.xml",
+            async: false,
+            success: function(data) {
+                $(data).find('station').each(function() {
+                    var s = $(this);
+                    var station = new Station(
+                            getElementText(s, 'name'),
+                            getElementFloat(s, 'lat'),
+                            getElementFloat(s, 'long'),
+                            getElementInt(s, 'nbBikes'),
+                            getElementInt(s, 'nbEmptyDocks')
+                            );
+
+                    stations.push(station);
+                });
+            }
+        });
+
+        return stations;
+    }
+
+    var stations = loadStations();
+
+    // Use a single infowindow for all markers, so that we only have a single active infowindow
+    // regardless of how many markers have been clicked.
+    var infowindow = new google.maps.InfoWindow();
 
     function drawStation(map, station) {
-        console.log('Drawing: ' + station.name);
-
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(station.latitude, station.longitude),
             map: map,
             title: station.name
         });
 
-        var infowindow = new google.maps.InfoWindow({
-            content: "<div>name: " + station.name + "<br/>bikes free: " +
-                station.available_bikes + "<br/>free docking points: " + station.free_docks +
-                "</div>"
-        });
-
         google.maps.event.addListener(marker, 'click', function() {
+            infowindow.setContent(station.descriptionHtml());
             infowindow.open(map, marker);
         });
+
+        return marker;
+    }
+
+    var visibleMarkers = [];
+
+    function clearStations() {
+        $.map(visibleMarkers, function(marker) { marker.setMap(null); });
+
+        visibleMarkers = [];
     }
 
     return {
         drawStations: function(map) {
-            for(var i = 0; i < stations.length; i++) {
-                drawStation(map, stations[i]);
-            }
+            clearStations();
+
+            $.map(stations, function(station) {
+                var bounds = map.getBounds();
+
+                if (station.inBounds(bounds)) {
+                    visibleMarkers.push(drawStation(map, station));
+                }
+            });
         }
-    }
+    };
 });
