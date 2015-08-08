@@ -43,21 +43,6 @@ define(['Station'], function(Station) {
     // regardless of how many markers have been clicked.
     var infowindow = new google.maps.InfoWindow();
 
-    function drawStation(map, station) {
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(station.latitude, station.longitude),
-            map: map,
-            title: station.name
-        });
-
-        google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(station.descriptionHtml());
-            infowindow.open(map, marker);
-        });
-
-        return marker;
-    }
-
     var visibleMarkers = [];
 
     function clearStations() {
@@ -74,7 +59,7 @@ define(['Station'], function(Station) {
                 var bounds = map.getBounds();
 
                 if (station.inBounds(bounds)) {
-                    visibleMarkers.push(drawStation(map, station));
+                    visibleMarkers.push(station.draw(map, infowindow));
                 }
             });
         }

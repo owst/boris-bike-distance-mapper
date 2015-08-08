@@ -1,5 +1,8 @@
 #map-canvas {
-    width: 1000px;
-    height: 800px;
-    background-color: #CCC;
+    position:fixed;
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
 }
