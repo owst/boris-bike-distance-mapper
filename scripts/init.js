@@ -1,6 +1,6 @@
 define(function() {
     return {
-        initialize: function() {
+        initializeMap: function() {
             var mapCanvas = document.getElementById('map-canvas');
 
             var mapOptions = {

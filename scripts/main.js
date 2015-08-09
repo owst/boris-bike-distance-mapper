@@ -1,6 +1,9 @@
 require(["init", "stations"], function(init, stations) {
     // TODO: use requirejs to require the gmaps api.
-    var map = init.initialize();
+    window.map = init.initializeMap();
+    window.infowindow = new google.maps.InfoWindow();
+
+    stations.loadStations();
 
     // Override center, if we can get it from the browser.
     if (navigator.geolocation) {
@@ -10,6 +13,7 @@ require(["init", "stations"], function(init, stations) {
         });
     }
 
-
-    google.maps.event.addListener(map, 'idle', function(){ stations.drawStations(map); });
+    google.maps.event.addListener(map, 'idle', function(){
+        stations.updateVisibleStations();
+    });
 });

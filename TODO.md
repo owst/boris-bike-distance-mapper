@@ -7,6 +7,7 @@
 - For given docking station, show all routes to other docking stations
     - Within X distance/Y time or so.
     - Once one chosen, give route?
+- Use r-tree rather than looping all stations, e.g.: https://github.com/leaflet-extras/RTree
 
 https://developers.google.com/maps/
 https://tfl.gov.uk/info-for/open-data-users/our-feeds?intcmp=3671#on-this-page-4

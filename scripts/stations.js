@@ -1,66 +1,60 @@
-define(['Station'], function(Station) {
-    function getElementText(container, elementName) {
-        return container.find(elementName).text();
-    }
+define(['stationLoader'], function(stationLoader) {
+    var stations = [];
+    var highlightedStations = [];
+    var visibleStations = [];
+    var highlight = {
+        circle: null,
+        station: null
+    };
 
-    function getElementFloat(container, elementName) {
-        return parseFloat(getElementText(container, elementName));
-    }
-
-    function getElementInt(container, elementName) {
-        return parseInt(getElementText(container, elementName));
-    }
-
-    // TODO: this more neatly, without async:false.
     function loadStations() {
-        var stations = [];
+        stations = stations.concat(stationLoader.loadStations());
 
-        $.ajax({
-            url: "livecyclehireupdates.xml",
-            async: false,
-            success: function(data) {
-                $(data).find('station').each(function() {
-                    var s = $(this);
-                    var station = new Station(
-                            getElementText(s, 'name'),
-                            getElementFloat(s, 'lat'),
-                            getElementFloat(s, 'long'),
-                            getElementInt(s, 'nbBikes'),
-                            getElementInt(s, 'nbEmptyDocks')
-                            );
-
-                    stations.push(station);
-                });
-            }
+        $.map(stations, function(station) {
+            station.setClickCallback(clickStationCallback);
         });
-
-        return stations;
     }
 
-    var stations = loadStations();
+    function clickStationCallback(station) {
+        console.log('click callback');
+        // Clear the circle of the previous clicked station.
+        if (highlight.station !== station) {
+            // Hide the current circle if there is one.
+            if (highlight.circle) {
+                highlight.circle.setMap(null);
+            }
 
-    // Use a single infowindow for all markers, so that we only have a single active infowindow
-    // regardless of how many markers have been clicked.
-    var infowindow = new google.maps.InfoWindow();
+            highlight.circle = new google.maps.Circle({
+                map: map,
+                radius: 1000, // meters
+                fillColor: '#AA0000'
+            });
 
-    var visibleMarkers = [];
+            highlight.circle.bindTo('center', station.marker, 'position');
+            highlight.station = station;
 
-    function clearStations() {
-        $.map(visibleMarkers, function(marker) { marker.setMap(null); });
+            // clear existing highlights...
+            $.map(highlightedStations, function(station) { station.setHighlighted(false); });
 
-        visibleMarkers = [];
+            // ...and set new highlights.
+            $.map(stations, function(station) {
+                if (station.inBounds(highlight.circle.getBounds())) {
+                    station.setHighlighted(true);
+                    highlightedStations.push(station);
+                }
+            });
+        }
     }
 
     return {
-        drawStations: function(map) {
-            clearStations();
+        loadStations: loadStations,
+        updateVisibleStations: function() {
+            var mapBounds = map.getBounds();
 
             $.map(stations, function(station) {
-                var bounds = map.getBounds();
+                var inBounds = station.inBounds(mapBounds);
 
-                if (station.inBounds(bounds)) {
-                    visibleMarkers.push(station.draw(map, infowindow));
-                }
+                station.setVisible(inBounds);
             });
         }
     };
