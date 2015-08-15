@@ -1,6 +1,6 @@
 define(['Station'], function(Station) {
     function getElementText(container, elementName) {
-        return container.find(elementName).text();
+        return container[elementName];
     }
 
     function getElementFloat(container, elementName) {
@@ -16,17 +16,18 @@ define(['Station'], function(Station) {
         var stations = [];
 
         $.ajax({
-            url: "livecyclehireupdates.xml",
+            url: "station_data.json",
             async: false,
-            success: function(data) {
-                $(data).find('station').each(function() {
-                    var s = $(this);
+            dataType: 'json',
+            success: function (data) {
+                $.each(data.stations.station, function(index, s) {
                     var station = new Station(
                         getElementText(s, 'name'),
                         getElementFloat(s, 'lat'),
                         getElementFloat(s, 'long'),
                         getElementInt(s, 'nbBikes'),
-                        getElementInt(s, 'nbEmptyDocks')
+                        getElementInt(s, 'nbEmptyDocks'),
+                        getElementInt(s, 'nbDocks')
                     );
 
                     stations.push(station);

@@ -5,7 +5,7 @@ define(function() {
 
             var mapOptions = {
                 center: new google.maps.LatLng(51.5072, 0.1275),
-                zoom: 15,
+                zoom: 14,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
 

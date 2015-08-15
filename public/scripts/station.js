@@ -7,7 +7,7 @@ define("Station", function() {
 
     function markerWithClickHandler(station) {
         var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(station.latitude, station.longitude),
+            position: station.getLatLng(),
             map: map,
             title: station.name,
             icon: markerIcon(false),
@@ -27,20 +27,29 @@ define("Station", function() {
         return marker;
     }
 
-    var Station = function Station(name, latitude, longitude, available_bikes, free_docks) {
+    var Station = function Station(name, latitude, longitude,
+                                   available_bikes, free_docks, total_docks) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.available_bikes = available_bikes;
         this.free_docks = free_docks;
+        this.total_docks = total_docks;
         this.marker = markerWithClickHandler(this);
+        this.highlighted = false;
     };
 
     // TODO: this, more neatly.
     Station.prototype.descriptionHtml = function() {
+        var that = this;
+
+        function outOfTotal(n) {
+            return n + '/' + that.total_docks;
+        }
+
         return "<div>Name: " + this.name + "<br/>Bikes free: " +
-            this.available_bikes + "<br/>Free docking points: " + this.free_docks +
-            "</div>";
+            outOfTotal(this.available_bikes) + "<br/>Free docking points: " +
+            outOfTotal(this.free_docks) + "</div>";
     };
 
     Station.prototype.inBounds = function(bounds) {
@@ -55,9 +64,14 @@ define("Station", function() {
         return latInRange && longInRange;
     };
 
+    Station.prototype.getLatLng = function() {
+        return new google.maps.LatLng(this.latitude, this.longitude);
+    };
+
     Station.prototype.setHighlighted = function(highlighted) {
         console.log('setting highlight: ' + highlighted);
         this.marker.setIcon(markerIcon(highlighted));
+        this.highlighted = highlighted;
     };
 
     Station.prototype.setVisible = function(visible) {
