@@ -11,15 +11,12 @@ define(['Station'], function(Station) {
         return parseInt(getElementText(container, elementName));
     }
 
-    // TODO: this more neatly somehow, without async:false?
-    function loadStations() {
-        var stations = [];
-
+    function loadStations(stationsLoadedCallback) {
         $.ajax({
             url: "station_data.json",
-            async: false,
             dataType: 'json',
             success: function (data) {
+                var stations = [];
                 $.each(data.stations.station, function(index, s) {
                     var station = new Station(
                         getElementText(s, 'name'),
@@ -32,10 +29,10 @@ define(['Station'], function(Station) {
 
                     stations.push(station);
                 });
+
+                stationsLoadedCallback(stations);
             }
         });
-
-        return stations;
     }
 
     return {
