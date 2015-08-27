@@ -1,4 +1,4 @@
-define("Station", function() {
+define(function() {
     function markerIcon(highlighted) {
         var icon_name = highlighted ? 'highlighted' : 'normal';
 
@@ -28,7 +28,7 @@ define("Station", function() {
     }
 
     var Station = function Station(name, latitude, longitude,
-                                   available_bikes, free_docks, total_docks) {
+    available_bikes, free_docks, total_docks) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -36,7 +36,6 @@ define("Station", function() {
         this.free_docks = free_docks;
         this.total_docks = total_docks;
         this.marker = markerWithClickHandler(this);
-        this.highlighted = false;
     };
 
     // TODO: this, more neatly.
@@ -68,18 +67,16 @@ define("Station", function() {
         return new google.maps.LatLng(this.latitude, this.longitude);
     };
 
-    Station.prototype.setHighlighted = function(highlighted) {
-        console.log('setting highlight: ' + highlighted);
-        this.marker.setIcon(markerIcon(highlighted));
-        this.highlighted = highlighted;
-    };
-
     Station.prototype.setVisible = function(visible) {
         this.marker.setVisible(visible);
     };
 
     Station.prototype.setClickCallback = function(callback) {
         this.clickCallback = callback;
+    };
+
+    Station.prototype.setHighlighted = function(highlighted) {
+        this.marker.setIcon(markerIcon(highlighted));
     };
 
     return Station;

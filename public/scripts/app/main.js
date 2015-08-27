@@ -1,4 +1,4 @@
-require(["init", "stations", "navigator"], function(init, stations, navigator) {
+require(["jquery", "app/init", "app/stations", "app/navigator"], function($, init, stations, navigator) {
     // TODO: use requirejs to require the gmaps api.
     map = init.initializeMap();
     infowindow = new google.maps.InfoWindow();
