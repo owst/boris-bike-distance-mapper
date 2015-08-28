@@ -13,18 +13,17 @@ define(['app/stationLoader', 'app/directions'], function(stationLoader, directio
     function setHighlight(station) {
         highlight.circle = new google.maps.Circle({
             map: map,
-            radius: 5000, // meters
-            fillColor: '#AA0000'
+            radius: 5000 // meters
         });
 
         highlight.circle.bindTo('center', station.marker, 'position');
-        station.setHighlighted(true);
+        station.setSelected(true);
         highlight.station = station;
     }
 
     function clearHighlight() {
         highlight.circle.setMap(null);
-        highlight.station.setHighlighted(false);
+        highlight.station.setSelected(false);
         highlight.station = null;
     }
 

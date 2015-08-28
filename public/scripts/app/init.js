@@ -4,8 +4,8 @@ define(function() {
             var mapCanvas = document.getElementById('map-canvas');
 
             var mapOptions = {
-                center: new google.maps.LatLng(51.5072, 0.1275),
-                zoom: 14,
+                center: new google.maps.LatLng(51.5022668, -0.1203357),
+                zoom: 13,
                 mapTypeId: google.maps.MapTypeId.ROADMAP
             };
 
