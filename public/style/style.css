@@ -5,12 +5,23 @@
     right:0;
     bottom:0;
     left:0;
+    z-index: 1;
 }
 
 #loading {
+    position: relative;
+    float: left;
     width:0;
     height:0;
     z-index: 2;
-    position:relative;
     margin:-32px 0 0 -8px; // Magic numbers to centre the spinner over the marker.
+}
+
+#side-bar {
+    width: 200px;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    z-index: 2;
 }
