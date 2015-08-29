@@ -1,13 +1,11 @@
-require(["jquery", "app/init", "app/stations", "app/navigator"], function($, init, stations, navigator) {
+require(["gmaps!", "app/map", "app/stations", "app/navigator"], function(gmaps, map, stations, navigator) {
+    // TODO: do we really require all of jQuery? I think we only use it for map/each
     // TODO: use requirejs to require the gmaps api.
-    map = init.initializeMap();
-    infowindow = new google.maps.InfoWindow();
-
     stations.loadStations();
 
     navigator.moveToBrowserLocationIfPossible();
 
-    google.maps.event.addListener(map, 'idle', function(){
+    gmaps.event.addListener(map, "idle", function(){
         stations.updateVisibleStations();
     });
 });

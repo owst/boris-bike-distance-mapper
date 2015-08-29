@@ -1,41 +1,38 @@
-console.log('stations');
-
-define(['app/stationLoader', 'app/directions'], function(stationLoader, directions) {
+define(["gmaps!", "jquery", "app/map", "app/stationLoader", "app/directions"], function(gmaps, $, map, stationLoader, directions) {
     var stations = [];
-    var highlightedStations = [];
-    var visibleStations = [];
-    var highlight = {
+    var selection = {
         circle: null,
-        station: null
+        startStation: null
     };
     var currentBounds = null;
 
-    function setHighlight(station) {
-        highlight.circle = new google.maps.Circle({
+
+    function setSelection(station) {
+        selection.circle = new gmaps.Circle({
             map: map,
             radius: 5000 // meters
         });
 
-        highlight.circle.bindTo('center', station.marker, 'position');
+        selection.circle.bindTo("center", station.marker, "position");
         station.setSelected(true);
-        highlight.station = station;
+        selection.startStation = station;
     }
 
-    function clearHighlight() {
-        highlight.circle.setMap(null);
-        highlight.station.setSelected(false);
-        highlight.station = null;
+    function clearSelection() {
+        selection.circle.setMap(null);
+        selection.startStation.setSelected(false);
+        selection.startStation = null;
     }
 
     function clickStationCallback(station) {
         directions.clearRoute();
 
-        if (highlight.station === null) {
-            setHighlight(station);
-        } else if (highlight.station !== station) {
-            directions.showRouteBetween(highlight.station, station);
+        if (selection.startStation === null) {
+            setSelection(station);
+        } else if (selection.startStation !== station) {
+            directions.showRouteBetween(selection.startStation, station);
         } else {
-            clearHighlight();
+            clearSelection();
         }
     }
 

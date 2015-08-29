@@ -1,9 +1,9 @@
-define(['app/station'], function(Station) {
+define(["jquery", "app/station"], function($, Station) {
     return {
-        'loadStations': function (stationsLoadedCallback) {
+        "loadStations": function (stationsLoadedCallback) {
             $.ajax({
                 url: "station_data.json",
-                dataType: 'json',
+                dataType: "json",
                 success: function (data) {
                     var stations = {};
 

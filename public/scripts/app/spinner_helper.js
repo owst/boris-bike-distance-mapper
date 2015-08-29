@@ -1,4 +1,4 @@
-define(['spin.min'], function (Spinner) {
+define(["gmaps!", "app/map", "spin.min"], function (gmaps, map, Spinner) {
     var opts = {
         lines: 17,
         length: 30,
@@ -6,7 +6,7 @@ define(['spin.min'], function (Spinner) {
         radius: 30,
         scale: 0.5,
         corners: 1,
-        color: '#000',
+        color: "#000",
         opacity: 0.25,
         rotate: 0,
         direction: 1,
@@ -14,28 +14,38 @@ define(['spin.min'], function (Spinner) {
         trail: 70,
         fps: 20,
         zIndex: 2e9,
-        className: 'spinner',
-        top: '50%',
-        left: '50%',
+        className: "spinner",
+        top: "50%",
+        left: "50%",
         shadow: false,
         hwaccel: true,
-        position: 'absolute'
+        markerPosition: "absolute"
     };
 
     var spinner = new Spinner(opts);
+    var loadingElement = document.getElementById("loading");
 
-    function removeSpinner() {
-        console.log('removing spinner');
-        spinner.spin(false);
-    }
+    // Used to get the x,y coordinate of a marker, relative to the map div.
+    var overlay = new gmaps.OverlayView();
+    overlay.draw = function() {};
+    overlay.setMap(map);
 
-    function addSpinnerTo(element) {
-        console.log('adding spinner: ' + element);
-        spinner.spin(element);
+    function moveLoadingElementToPositionOf(marker) {
+        var proj = overlay.getProjection();
+        var markerPos = marker.getLatLng();
+        var point = proj.fromLatLngToContainerPixel(markerPos);
+        var style = loadingElement.style;
+        style.left = point.x + "px";
+        style.top = point.y + "px";
     }
 
     return {
-        addSpinnerTo: addSpinnerTo,
-        removeSpinner: removeSpinner
+        moveLoadingElementToPositionOf: moveLoadingElementToPositionOf,
+        removeSpinner: function () {
+            spinner.spin(false);
+        },
+        addSpinner: function() {
+            spinner.spin(loadingElement);
+        }
     };
 });

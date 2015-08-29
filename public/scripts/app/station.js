@@ -1,18 +1,15 @@
-define(function() {
+define(["gmaps!", "app/map"], function(gmaps, map) {
     function markerWithClickHandler(station) {
-        var marker = new google.maps.Marker({
+        var marker = new gmaps.Marker({
             position: station.getLatLng(),
             map: map,
             title: station.name,
             icon: station.markerIcon(),
-            size: new google.maps.Size(22, 40),
+            size: new gmaps.Size(22, 40),
             visible: false
         });
 
-        google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(station.descriptionHtml());
-            infowindow.open(map, marker);
-
+        gmaps.event.addListener(marker, "click", function() {
             if (station.clickCallback) {
                 station.clickCallback(station);
             }
@@ -34,7 +31,7 @@ define(function() {
     };
 
     Station.prototype.outOfTotal = function(n) {
-        return n + '/' + this.total_docks;
+        return n + "/" + this.total_docks;
     };
 
     // TODO: this, more neatly.
@@ -61,7 +58,7 @@ define(function() {
     };
 
     Station.prototype.getLatLng = function() {
-        return new google.maps.LatLng(this.latitude, this.longitude);
+        return new gmaps.LatLng(this.latitude, this.longitude);
     };
 
     Station.prototype.setVisible = function(visible) {
@@ -77,27 +74,23 @@ define(function() {
         this.marker.setIcon(this.markerIcon());
     };
 
-    // For a percentage 0 <= p <= 100, determine the quintile:
-    // 0-19 => 1, 20-39 => 2, ... 80-100 => 5 (N.B. inclusive of 100!)
-    function getQuintile(percentage) {
-        // Ensure roundedQuintile is in the range 0-4
-        percentage = percentage === 100 ? 99 : percentage;
-        var roundedQuintile = Math.floor(percentage / 20);
-
-        return roundedQuintile + 1;
+    // For a percentage 0 <= p <= 100, return an int indicating availability:
+    // 0 => 0, 1-19 => 1, ... 81-100 => 5 (N.B. inclusive of 100!)
+    function getAvailabilityIndicator(percentage) {
+        return Math.ceil(percentage / 20);
     }
 
     Station.prototype.markerIcon = function() {
         var iconWidth = 22;
-        var quintile = getQuintile(this.percentageOfFreeDocks());
-        var originX = this.selected ? 0 : iconWidth * quintile;
+        var availability = getAvailabilityIndicator(this.percentageOfFreeDocks());
+        var originX = this.selected ? 0 : iconWidth * (availability + 1);
 
         return {
-            url: 'icons/sprites.png',
-            size: new google.maps.Size(iconWidth, 40),
+            url: "icons/sprites.png",
+            size: new gmaps.Size(iconWidth, 40),
             // The origin for this image is (0, 0).
-            origin: new google.maps.Point(originX, 0),
-            anchor: new google.maps.Point(iconWidth / 2, 40)
+            origin: new gmaps.Point(originX, 0),
+            anchor: new gmaps.Point(iconWidth / 2, 40)
         };
     };
 
