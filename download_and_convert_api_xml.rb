@@ -44,26 +44,36 @@ def slice_and_convert_required_attributes(parsed_stations_data)
   end
 end
 
-def download_content_if_out_of_date
+def download_content
+  feed_get_response = HTTParty.get(FEED_URL)
+
+  if feed_get_response.code == 200
+    yield feed_get_response.body
+
+    puts 'Successfully downloaded feed data!'
+  else
+    puts "Could not download new copy of feed data got code: #{res.code}"
+  end
+end
+
+def download_content_if_out_of_date(&new_content_block)
   if download_out_of_date?
-    feed_get_response = HTTParty.get(FEED_URL)
-
-    if feed_get_response.code == 200
-      yield feed_get_response.body
-
-      puts 'Successfully downloaded feed data!'
-    else
-      puts "Could not download new copy of feed data got code: #{res.code}"
-    end
+    download_content(&new_content_block)
   else
     puts 'Have already downloaded recent copy of feed data.'
   end
 end
 
 def download_out_of_date?
-  last_downloaded_at = DateTime.parse(File.read(LAST_DOWNLOADED_AT_FILE_NAME)) rescue nil
+  last_downloaded_at = read_last_downloaded_at_file
 
   !last_downloaded_at || last_downloaded_at <= 30.seconds.ago
+end
+
+def read_last_downloaded_at_file
+  DateTime.parse(File.read(LAST_DOWNLOADED_AT_FILE_NAME))
+rescue
+  nil
 end
 
 main
