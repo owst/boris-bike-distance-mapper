@@ -8,9 +8,9 @@
 }
 
 #loading {
-    width:100px;
-    height:100px;
+    width:0;
+    height:0;
     z-index: 2;
     position:relative;
-    margin:-82px 0 0 -58px; // Magic numbers to centre the spinner over the marker.
+    margin:-32px 0 0 -8px; // Magic numbers to centre the spinner over the marker.
 }
