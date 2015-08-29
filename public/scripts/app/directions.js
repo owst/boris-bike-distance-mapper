@@ -9,7 +9,7 @@ define(["gmaps!", "app/map", "app/spinner_helper"], function(gmaps, map, spinner
     var directionsService = new gmaps.DirectionsService();
 
     function showRouteBetween(start, end) {
-        spinnerHelper.moveLoadingElementToPositionOf(end);
+        spinnerHelper.addSpinnerAt(end);
 
         var request = {
             origin: start.getLatLng(),
@@ -17,17 +17,20 @@ define(["gmaps!", "app/map", "app/spinner_helper"], function(gmaps, map, spinner
             travelMode: gmaps.TravelMode.BICYCLING
         };
 
-        spinnerHelper.addSpinner();
+        var routeData = {};
 
         directionsService.route(request, function(response, status) {
             if (status == gmaps.DirectionsStatus.OK) {
                 directionsDisplay.setDirections(response);
                 directionsDisplay.setMap(map);
-                //     var leg = response.routes[0].legs[0];
-                //     console.log('Route: ' + leg.distance.text + ', ~' + leg.duration.text);
                 spinnerHelper.removeSpinner();
+                var leg = response.routes[0].legs[0];
+                routeData.distance = leg.distance.text;
+                routeData.duration = leg.duration.text;
             }
         });
+
+        return routeData;
     }
 
     function clearRoute() {

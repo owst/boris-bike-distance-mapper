@@ -6,7 +6,7 @@ define(["gmaps!", "app/map", "spin.min"], function (gmaps, map, Spinner) {
         radius: 30,
         scale: 0.5,
         corners: 1,
-        color: "#000",
+        color: "#006",
         opacity: 0.25,
         rotate: 0,
         direction: 1,
@@ -40,11 +40,11 @@ define(["gmaps!", "app/map", "spin.min"], function (gmaps, map, Spinner) {
     }
 
     return {
-        moveLoadingElementToPositionOf: moveLoadingElementToPositionOf,
         removeSpinner: function () {
             spinner.spin(false);
         },
-        addSpinner: function() {
+        addSpinnerAt: function(marker) {
+            moveLoadingElementToPositionOf(marker);
             spinner.spin(loadingElement);
         }
     };

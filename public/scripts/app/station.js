@@ -5,8 +5,7 @@ define(["gmaps!", "app/map"], function(gmaps, map) {
             map: map,
             title: station.name,
             icon: station.markerIcon(),
-            size: new gmaps.Size(22, 40),
-            visible: false
+            size: new gmaps.Size(22, 40)
         });
 
         gmaps.event.addListener(marker, "click", function() {
@@ -18,8 +17,7 @@ define(["gmaps!", "app/map"], function(gmaps, map) {
         return marker;
     }
 
-    var Station = function Station(name, latitude, longitude,
-    available_bikes, free_docks, total_docks) {
+    var Station = function Station(name, latitude, longitude, available_bikes, free_docks, total_docks) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -59,10 +57,6 @@ define(["gmaps!", "app/map"], function(gmaps, map) {
 
     Station.prototype.getLatLng = function() {
         return new gmaps.LatLng(this.latitude, this.longitude);
-    };
-
-    Station.prototype.setVisible = function(visible) {
-        this.marker.setVisible(visible);
     };
 
     Station.prototype.setClickCallback = function(callback) {

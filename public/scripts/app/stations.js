@@ -4,8 +4,6 @@ define(["gmaps!", "jquery", "app/map", "app/stationLoader", "app/directions"], f
         circle: null,
         startStation: null
     };
-    var currentBounds = null;
-
 
     function setSelection(station) {
         selection.circle = new gmaps.Circle({
@@ -46,20 +44,6 @@ define(["gmaps!", "jquery", "app/map", "app/stationLoader", "app/directions"], f
                 });
 
             });
-        },
-        updateVisibleStations: function() {
-            var mapBounds = map.getBounds();
-
-            if (mapBounds !== currentBounds) {
-
-                $.each(stations, function(id, station) {
-                    var inBounds = station.inBounds(mapBounds);
-
-                    station.setVisible(inBounds);
-                });
-
-                currentBounds = mapBounds;
-            }
         }
     };
 });
