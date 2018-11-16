@@ -19,7 +19,7 @@ GEM
     minitest (5.11.3)
     multi_xml (0.6.0)
     mustermann (1.0.2)
-    rack (2.0.4)
+    rack (2.0.6)
     rack-protection (2.0.1)
       rack
     safe_yaml (1.0.4)
@@ -49,4 +49,4 @@ DEPENDENCIES
   thin
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
